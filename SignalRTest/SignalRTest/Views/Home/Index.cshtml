@@ -1,0 +1,36 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+  <input type="text" id="txtMessage"> <button>Gönder</button>
+   <ul id="messages">
+   </ul>
+@section Scripts{
+
+    <script>
+      window.onload = function(){
+          const connection = new signalR.HubConnectionBuilder()
+    .withUrl("https://localhost:7122/myhub")
+    .configureLogging(signalR.LogLevel.Information)
+    .build();
+
+     connection.start();
+ 
+      $("button").click(() => {
+         let message = $("#txtMessage").val();
+         connection.invoke("SendMessage", message)
+            .catch(error => console.log("error"));
+      });
+ 
+      connection.on("message", message => {
+         $("#messages").append(`${message}<br>`);
+      });
+
+      }
+
+   
+  
+    </script>
+
+}
+
